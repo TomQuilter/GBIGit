@@ -7,8 +7,8 @@ import math
 
 def insert_commas(s):
     return ",".join(s)
-
-string = "hello"
+ 
+string = "hello Git"
 print(insert_commas(string))  # Output: h,e,l,l,o
 
 class QLearningAgent:
