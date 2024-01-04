@@ -415,7 +415,7 @@ class GridWorldGame:
                 #action = random.choice(moves)
                 # action = (self.NumberOfRows-1,self.NumberOfCols-1)    ## One player Mode
                 action = (0,self.NumberOfCols-1)      ### Deterministic Policy
- 
+  
                  # print("0's action = ", action)
 
             ###### Execute action AND UPDATE the NEW *State* and board ########
