@@ -8,12 +8,9 @@ import math
 def insert_commas(s):
     return ",".join(s)
  
-string = "hello Git"
-print(insert_commas(string))  # Output: h,e,l,l,o
-
 class QLearningAgent:
     def __init__(self, alpha=0.1, gamma=0.9
-                 , epsilon=0.8, TotalNumberOfGamesToPlay=100):
+                 , epsilon=0.8, TotalNumberOfGamesToPlay=400):
         self.Q = {}     ## Initiate Q table 
         self.alpha = alpha 
         self.gamma = gamma 
@@ -212,9 +209,9 @@ class GridWorldGame:
         self.board = [[' ' for _ in range(self.NumberOfCols)] for _ in range(self.NumberOfRows)]
         # Set the starting positions of the players
         self.board[0][0] = 'X'
-        self.board[0][self.NumberOfCols-1] = 'O'        ## Always start in the top right corner for now
-        # self.board[self.NumberOfRows-1][self.NumberOfCols-1] = 'O'
-        # Set the positions of the barriers
+        # self.board[0][self.NumberOfCols-1] = 'O'        ## Always start in the top right corner for now
+        self.board[self.NumberOfRows-1][self.NumberOfCols-1] = 'O'
+        # Set the positions of the barriers 
         self.add_BarrierPositions(self.BarrierPositions)
         self.current_state = ''.join([''.join(row) for row in self.board])
       #r#print("## Current State after a reset of they game = ", self.current_state)
@@ -393,9 +390,10 @@ class GridWorldGame:
                         reward = -1 ## Penalty for playing a move
                 if self.current_player == 'O':
                     if training:
-                        action = self.ThePreDeterminedPlayer2Move(moves)
-                        #action = random.choice(moves)
-                        print("moves",moves)
+                        # action = self.ThePreDeterminedPlayer2Move(moves)
+                        #action = random.choice(moves) 
+                        print("moves",moves) 
+                        action = (self.NumberOfRows-1,self.NumberOfCols-1)    ## One player Mode
                       #r#print("O's random move",action)
                     else:
                         move_str = input("Enter your move (e.g. 0,3): ")
@@ -413,8 +411,9 @@ class GridWorldGame:
                 1==1
                 #action = (2,2)
                 #action = random.choice(moves)
-                # action = (self.NumberOfRows-1,self.NumberOfCols-1)    ## One player Mode
-                action = (0,self.NumberOfCols-1)      ### Deterministic Policy
+                action = (self.NumberOfRows-1,self.NumberOfCols-1)    ## One player Mode
+                #action = (0,self.NumberOfCols-1)      
+                #ThePreDeterminedPlayer2Move(self,coordinates): ### Deterministic Policy
   
                  # print("0's action = ", action)
 
