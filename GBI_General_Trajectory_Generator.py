@@ -484,7 +484,7 @@ class GridWorldGame:
                 # return -1  # return reward for O's win
  
                 ######   LEARN after every X move !? ######
-            if self.current_player == 'X' and action[1] != self.WinningColumnForX:    
+            if self.current_player == 'X' and self.XhasWon != 1:    
             # if self.current_player == 'X'and (action[0],action[1]) != (self.WinningRowForX,self.WinningColumnForX):  # if it's X's turn and hasnt won then LEARN
                 print("X's non-random move",action) 
                 ## If last game record the move TotalNumberOfGamesToPlay
