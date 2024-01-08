@@ -491,7 +491,7 @@ class GridWorldGame:
                 onelessthanthetotalnumberofgames = agent.TotalNumberOfGamesToPlay - 1
                 if self.NumberofGamesPlayedSoFar == onelessthanthetotalnumberofgames and self.NumberofMovesInTheGameSoFar > -1: #Dont include last games victorious move
                     agent.OptimalTrajectory.append(action)
-
+ 
                 print("Reward = ",reward) 
                 q_agent.learn(self.PreviousState , self.current_state, action, reward, MaxQValueFromAllPossibleActionsInTheNEWState,XHasWonTheGameWithTheLastMove) 
 
