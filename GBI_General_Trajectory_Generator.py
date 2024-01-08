@@ -8,15 +8,19 @@ import math
 def insert_commas(s):
     return ",".join(s)
  
+string = "hello Git"
+print(insert_commas(string))  # Output: h,e,l,l,o
+
 class QLearningAgent:
     def __init__(self, alpha=0.1, gamma=0.9
-                 , epsilon=0.8, TotalNumberOfGamesToPlay=400):
+                 , epsilon=0.8, TotalNumberOfGamesToPlay=100, XGoal = "ColumnThree"):
         self.Q = {}     ## Initiate Q table 
         self.alpha = alpha 
         self.gamma = gamma 
         self.epsilon = epsilon
         self.TotalNumberOfGamesToPlay = TotalNumberOfGamesToPlay
         self.OptimalTrajectory = []     ## Initiate OptimalTrajectory
+        self.XGoal = XGoal
 
     def get_Q(self, state, action):
 
@@ -54,9 +58,9 @@ class QLearningAgent:
         RandomNumber = random.uniform(0, 1)
         ExplorationThreshold = self.epsilon*pow(ExplorationProb, NumberOfGamesPlayedSoFar)  ##  300 and 0.985  ## 5000 and 0.9999 ## 1000 and 0.995
         onelessthanthetotalnumberofgames = agent.TotalNumberOfGamesToPlay - 1
-        if NumberOfGamesPlayedSoFar >= agent.TotalNumberOfGamesToPlay :
+        if NumberOfGamesPlayedSoFar >= onelessthanthetotalnumberofgames :
             ExplorationThreshold = 0   ## If its the penultimalte final game then play the optimal strategy with Zero exploration
-      #r#print("/// Epsilon =", ExplorationThreshold , " ///")
+            print("/// End of Training so Epsilon will be =", ExplorationThreshold , " for the final game to determine optimal trajectory///")
         if RandomNumber < ExplorationThreshold:
           #r#print(RandomNumber,ExplorationThreshold,"###Randomly Explore!##", NumberOfGamesPlayedSoFar)
             #q_values = [random.uniform(0, 1) for action in available_actions]
@@ -134,7 +138,7 @@ class GridWorldGame:
       #r#print("Value =", BarrierPositions)
 
         self.NumberOfRows = 4
-        self.NumberOfCols = 4
+        self.NumberOfCols = 6
         # Initialize the 5x5 game board
         self.board = [[' ' for _ in range(self.NumberOfCols)] for _ in range(self.NumberOfRows)]
 
@@ -145,8 +149,8 @@ class GridWorldGame:
         # Set the starting positions of the players
         self.board[0][0] = 'X' 
         agent.OptimalTrajectory.append((0,0))
-        self.board[0][self.NumberOfCols-1] = 'O'        ## Always start in the top right corner for now
-        #self.board[self.NumberOfRows-1][self.NumberOfCols-1] = 'O'   ## Always start in the bottom right corner for now
+        # self.board[0][self.NumberOfCols-1] = 'O'        ## Always start in the top right corner for now
+        self.board[self.NumberOfRows-1][self.NumberOfCols-1] = 'O'   ## Always start in the bottom right corner for now
  
         self.NumberofGamesPlayedSoFar = 1
         self.NumberofXVictoriesInTheGameSoFar = 0
@@ -157,10 +161,13 @@ class GridWorldGame:
         self.current_player = 'X'
         # Define the winning rows for each player
         # self.WinningColumnForX = self.NumberOfCols-1
-        self.WinningColumnForX = 3
-        #self.WinningRowForX = 0
-        self.WinningColumnForO = 0
-        #self.WinningRowForO = 0
+
+        print(agent.XGoal)
+        if agent.XGoal == "ColumnThree":
+            self.WinningColumnForX = 3
+            #self.WinningRowForX = 0
+            self.WinningColumnForO = 0
+            #self.WinningRowForO = 0
  
         self.current_state = ''.join([''.join(row) for row in self.board])
       #r#print("## Current State at the start of the game = ", self.current_state)
@@ -202,16 +209,16 @@ class GridWorldGame:
         self.NumberofGamesPlayedSoFar += 1 
         # Player X always starts
         self.current_player = 'X'
-        print("##### GAME NUMBER", self.NumberofGamesPlayedSoFar)
-        if(self.NumberofGamesPlayedSoFar == 599):
-            1==1
+        
+        #if(self.NumberofGamesPlayedSoFar == 599):
+        #    1==1
         # Initialize the 5x5 game board
         self.board = [[' ' for _ in range(self.NumberOfCols)] for _ in range(self.NumberOfRows)]
         # Set the starting positions of the players
-        self.board[0][0] = 'X'
-        # self.board[0][self.NumberOfCols-1] = 'O'        ## Always start in the top right corner for now
+        self.board[0][0] = 'X' 
+        #self.board[0][self.NumberOfCols-1] = 'O'        ## Always start in the top right corner for now
         self.board[self.NumberOfRows-1][self.NumberOfCols-1] = 'O'
-        # Set the positions of the barriers 
+        # Set the positions of the barriers
         self.add_BarrierPositions(self.BarrierPositions)
         self.current_state = ''.join([''.join(row) for row in self.board])
       #r#print("## Current State after a reset of they game = ", self.current_state)
@@ -338,6 +345,10 @@ class GridWorldGame:
     
     def play(self, q_agent=None, training=True):   
         while self.NumberofGamesPlayedSoFar < (agent.TotalNumberOfGamesToPlay+1):
+            if self.NumberofMovesInTheGameSoFar == -1: 
+                print("####################################################")
+                print("############### GAME NUMBER", self.NumberofGamesPlayedSoFar, "#############")
+                print("####################################################")
           #r#print("NumberofGamesPlayedSoFar = ",self.NumberofGamesPlayedSoFar)
             self.NumberofMovesInTheGameSoFar += 1
             print("self.NumberofMovesInTheGameSoFar = ",self.NumberofMovesInTheGameSoFar)
@@ -390,10 +401,9 @@ class GridWorldGame:
                         reward = -1 ## Penalty for playing a move
                 if self.current_player == 'O':
                     if training:
-                        # action = self.ThePreDeterminedPlayer2Move(moves)
-                        #action = random.choice(moves) 
-                        print("moves",moves) 
-                        action = (self.NumberOfRows-1,self.NumberOfCols-1)    ## One player Mode
+                        action = self.ThePreDeterminedPlayer2Move(moves)
+                        #action = random.choice(moves)
+                        print("moves",moves)
                       #r#print("O's random move",action)
                     else:
                         move_str = input("Enter your move (e.g. 0,3): ")
@@ -411,10 +421,9 @@ class GridWorldGame:
                 1==1
                 #action = (2,2)
                 #action = random.choice(moves)
-                action = (self.NumberOfRows-1,self.NumberOfCols-1)    ## One player Mode
-                #action = (0,self.NumberOfCols-1)      
-                #ThePreDeterminedPlayer2Move(self,coordinates): ### Deterministic Policy
-  
+                action = (self.NumberOfRows-1,self.NumberOfCols-1)
+                # action = (0,self.NumberOfCols-1)
+
                  # print("0's action = ", action)
 
             ###### Execute action AND UPDATE the NEW *State* and board ########
@@ -446,7 +455,13 @@ class GridWorldGame:
 
             # Check for game over conditions and learn and then reset
             # reward = 0  ## By Defaut
-            if self.current_player == 'X' and action[1] == self.WinningColumnForX:
+            self.XhasWon = 0
+            if agent.XGoal == "ColumnThree":
+               if self.current_player == 'X' and action[1] == self.WinningColumnForX: self.XhasWon = 1 
+            else:
+               if self.current_player == 'X' and (action[0],action[1]) == (self.WinningRowForX,self.WinningColumnForX): self.XhasWon = 1
+
+            if self.current_player == 'X' and self.XhasWon == 1:
             # if self.current_player == 'X' and (action[0],action[1]) == (self.WinningRowForX,self.WinningColumnForX):
                 reward = 100               
                 print("X is the winner!!") ### Learn only when you win
@@ -467,7 +482,7 @@ class GridWorldGame:
                 self.NumberofOVictoriesInTheGameSoFar += 1
                 self.ResetThePeicesAtTheEndOfTheGame()
                 # return -1  # return reward for O's win
-
+ 
                 ######   LEARN after every X move !? ######
             if self.current_player == 'X' and action[1] != self.WinningColumnForX:    
             # if self.current_player == 'X'and (action[0],action[1]) != (self.WinningRowForX,self.WinningColumnForX):  # if it's X's turn and hasnt won then LEARN
@@ -609,7 +624,15 @@ print("Number post cleaninging",len(sorted_combinations))
 #################################################################################
 
 ## Overide
-sorted_combinations = [(1, 2)]
+# sorted_combinations = [(1, 2)]  ## Correct with 100
+# sorted_combinations = [(0, 2, 1, 2)]  ## Correct with 100
+# sorted_combinations = [(0, 2, 1, 2, 2, 2)]  ## Correct with 100
+# sorted_combinations = [(0, 2, 1, 2, 2, 1, 2, 2)]  ## Correct with 100
+# sorted_combinations = [(0, 2, 1, 2, 1, 1, 2, 2)]  ## Correct with 100
+# sorted_combinations = [(0, 1, 0, 2, 1, 2, 1, 1, 2, 2)]  ## Correct with 100
+# sorted_combinations = [(1, 0 , 0, 2, 1, 2, 1, 1, 2, 2)]  ## Correct with 100
+# sorted_combinations = [(0, 2 , 2, 2)] 
+sorted_combinations = [(0, 2 , 1, 2, 2, 2)] 
 #sorted_combinations = [(3, 0)]
 # sorted_combinations = [(0, 2 , 1, 2)]
 # sorted_combinations = [(0, 2 , 1, 2)]

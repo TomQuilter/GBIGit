@@ -143,7 +143,7 @@ class GridWorldGame:
 
         self.add_BarrierPositions(BarrierPositions)
 
-        #self.BarrierPositions()
+        #self.BarrierPositions() 
 
         # Set the starting positions of the players
         self.board[0][0] = 'X' 
