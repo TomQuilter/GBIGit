@@ -13,7 +13,7 @@ print(insert_commas(string))  # Output: h,e,l,l,o
 
 class QLearningAgent:
     def __init__(self, alpha=0.1, gamma=0.9
-                 , epsilon=0.8, TotalNumberOfGamesToPlay=100, XGoal = "ColumnThree"):
+                 , epsilon=0.8, TotalNumberOfGamesToPlay=500, XGoal = "SpecificSquare"):   # XGoal = "ColumnThree"
         self.Q = {}     ## Initiate Q table 
         self.alpha = alpha 
         self.gamma = gamma 
@@ -165,7 +165,10 @@ class GridWorldGame:
         print(agent.XGoal)
         if agent.XGoal == "ColumnThree":
             self.WinningColumnForX = 3
-            #self.WinningRowForX = 0
+            self.WinningColumnForO = 0
+        else:
+            self.WinningColumnForX = 3
+            self.WinningRowForX = 0
             self.WinningColumnForO = 0
             #self.WinningRowForO = 0
  

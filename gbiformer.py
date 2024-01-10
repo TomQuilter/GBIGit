@@ -49,8 +49,8 @@ config = {
         "use_bias"          : True,
         "learning_rate"     : 1e-5,
     },
-    "training" : {
-        "epochs"           : 500,
+    "training" : { 
+        "epochs"           : 1,
         "batch_size"       : 32,
         "validation_split" : 0.2,
         "early_stopping" : {
